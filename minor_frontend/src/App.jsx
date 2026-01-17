@@ -1,30 +1,67 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { SocketProvider } from './context/SocketContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+
+// Pages
 import Login from './pages/Login';
+import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-import Home from "./pages/Home"
-// import CreateRoom from './pages/CreateRoom';
-// import JoinRoom from './pages/JoinRoom';
-import RoomPage from './pages/RoomPage';
-import { RoomProvider } from './context/RoomContext';
+import Problems from './pages/Problems';
+import ProblemSolve from './pages/ProblemSolve';
+import Submissions from './pages/Submissions';
+import Rooms from './pages/Rooms';
+import Room from './pages/Room';
+import Sessions from './pages/Sessions';
+import SessionDetail from './pages/SessionDetail';
+import Mentors from './pages/Mentors';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 
+import './App.css';
 
-export default function App() {
+function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home/>}/>
-      <Route path="/login" element={<Login />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      {/* <Route path="/create-room" element={<CreateRoom />} /> */}
-      {/* <Route path="/join-room" element={<JoinRoom />} /> */}
-      <Route 
-        path="/room/:roomId"
-        element={
-          <RoomProvider>
-            <RoomPage />
-          </RoomProvider>
-        }
-      />
-    </Routes>
+    <AuthProvider>
+      <SocketProvider>
+        <Router>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+
+              {/* Problems */}
+              <Route path="/problems" element={<Problems />} />
+              <Route path="/problems/:id" element={<ProblemSolve />} />
+              <Route path="/submissions" element={<Submissions />} />
+
+              {/* Rooms */}
+              <Route path="/rooms" element={<Rooms />} />
+              <Route path="/room/:roomId" element={<Room />} />
+
+              {/* Sessions */}
+              <Route path="/sessions" element={<Sessions />} />
+              <Route path="/sessions/:id" element={<SessionDetail />} />
+              <Route path="/mentors" element={<Mentors />} />
+
+              {/* Profile */}
+              <Route path="/profile/:id" element={<Profile />} />
+              <Route path="/settings" element={<Settings />} />
+            </Route>
+
+            {/* 404 */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </Router>
+      </SocketProvider>
+    </AuthProvider>
   );
 }
+
+export default App;
