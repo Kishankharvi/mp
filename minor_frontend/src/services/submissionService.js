@@ -11,12 +11,16 @@ export const submitSolution = async (problemId, code, language) => {
 };
 
 // Execute code without submitting
-export const executeCode = async (code, language, input = '') => {
-    const response = await api.post('/submissions/execute', {
+export const executeCode = async (code, language, input = '', problemId = null) => {
+    const payload = {
         code,
         language,
         input
-    });
+    };
+    if (problemId) {
+        payload.problemId = problemId;
+    }
+    const response = await api.post('/submissions/execute', payload);
     return response.data;
 };
 

@@ -1,15 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { SocketProvider } from './context/SocketContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
 // Pages
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Problems from './pages/Problems';
 import ProblemSolve from './pages/ProblemSolve';
+import CreateProblem from './pages/CreateProblem';
 import Submissions from './pages/Submissions';
 import Rooms from './pages/Rooms';
 import Room from './pages/Room';
@@ -24,42 +25,44 @@ import './App.css';
 function App() {
   return (
     <AuthProvider>
-      <SocketProvider>
-        <Router>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+      <ThemeProvider>
+        <SocketProvider>
+          <Router>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Landing />} />
 
-            {/* Protected Routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/dashboard" element={<Dashboard />} />
 
-              {/* Problems */}
-              <Route path="/problems" element={<Problems />} />
-              <Route path="/problems/:id" element={<ProblemSolve />} />
-              <Route path="/submissions" element={<Submissions />} />
+                {/* Problems */}
+                <Route path="/problems" element={<Problems />} />
+                <Route path="/problems/create" element={<CreateProblem />} />
+                <Route path="/problems/:id" element={<ProblemSolve />} />
 
-              {/* Rooms */}
-              <Route path="/rooms" element={<Rooms />} />
-              <Route path="/room/:roomId" element={<Room />} />
+                <Route path="/submissions" element={<Submissions />} />
 
-              {/* Sessions */}
-              <Route path="/sessions" element={<Sessions />} />
-              <Route path="/sessions/:id" element={<SessionDetail />} />
-              <Route path="/mentors" element={<Mentors />} />
+                {/* Rooms */}
+                <Route path="/rooms" element={<Rooms />} />
+                <Route path="/room/:roomId" element={<Room />} />
 
-              {/* Profile */}
-              <Route path="/profile/:id" element={<Profile />} />
-              <Route path="/settings" element={<Settings />} />
-            </Route>
+                {/* Sessions */}
+                <Route path="/sessions" element={<Sessions />} />
+                <Route path="/sessions/:id" element={<SessionDetail />} />
+                <Route path="/mentors" element={<Mentors />} />
 
-            {/* 404 */}
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
-        </Router>
-      </SocketProvider>
+                {/* Profile */}
+                <Route path="/profile/:id" element={<Profile />} />
+                <Route path="/settings" element={<Settings />} />
+              </Route>
+
+              {/* 404 */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Router>
+        </SocketProvider>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

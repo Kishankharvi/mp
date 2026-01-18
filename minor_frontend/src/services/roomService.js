@@ -76,6 +76,32 @@ export const closeRoom = async (roomId) => {
     return response.data.room;
 };
 
+
+// Auto-join/create room for session
+export const joinSessionRoom = async (session) => {
+    const roomId = `session-${session._id}`;
+    try {
+        await getRoom(roomId);
+    } catch (error) {
+        // Room doesn't exist, create it
+        if (error.response?.status === 404 || error.message.includes('not found')) {
+            await createRoom({
+                roomId,
+                name: session.title,
+                sessionId: session._id,
+                files: [{
+                    path: 'main.js',
+                    content: `// Mentorship Session: ${session.title}\n// Mentor: ${session.mentorId?.username}\n// Student: ${session.studentId?.username}\n\nconsole.log("Welcome to your session!");\n`,
+                    language: 'javascript'
+                }]
+            });
+        } else {
+            throw error;
+        }
+    }
+    return roomId;
+};
+
 export default {
     createRoom,
     getRoom,
@@ -87,5 +113,6 @@ export default {
     startRecording,
     stopRecording,
     updateWhiteboard,
-    closeRoom
+    closeRoom,
+    joinSessionRoom
 };

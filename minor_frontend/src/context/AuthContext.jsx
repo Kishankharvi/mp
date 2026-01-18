@@ -85,6 +85,22 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const hasRole = (role) => {
+        return user && user.role === role;
+    };
+
+    const isAdmin = () => {
+        return user && user.role === 'admin';
+    };
+
+    const isMentor = () => {
+        return user && user.role === 'mentor';
+    };
+
+    const canCreateProblems = () => {
+        return user && (user.role === 'admin' || user.role === 'mentor');
+    };
+
     const value = {
         user,
         loading,
@@ -93,7 +109,11 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         updateProfile,
-        updateMentorProfile
+        updateMentorProfile,
+        hasRole,
+        isAdmin,
+        isMentor,
+        canCreateProblems
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

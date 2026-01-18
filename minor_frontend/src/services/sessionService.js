@@ -39,11 +39,18 @@ export const getAvailableMentors = async () => {
     return response.data.mentors;
 };
 
+// Update session status (Approve/Reject)
+export const updateSessionStatus = async (sessionId, status) => {
+    const response = await api.post(`/sessions/${sessionId}/status`, { status });
+    return response.data.session;
+};
+
 export default {
     createSession,
     getMySessions,
     getSession,
     completeSession,
     cancelSession,
-    getAvailableMentors
+    getAvailableMentors,
+    updateSessionStatus
 };

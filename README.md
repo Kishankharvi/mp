@@ -4,7 +4,7 @@ A comprehensive full-stack MERN application for collaborative coding, real-time 
 
 ![Platform](https://img.shields.io/badge/Platform-MERN-green)
 ![License](https://img.shields.io/badge/License-MIT-blue)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
+![Status](https://img.shields.io/badge/Status-Development-orange)
 
 ## 📋 Table of Contents
 
@@ -17,7 +17,6 @@ A comprehensive full-stack MERN application for collaborative coding, real-time 
 - [API Documentation](#api-documentation)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Deployment](#deployment)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -31,10 +30,10 @@ A modern, scalable platform that combines:
 - **Gamification** with achievements and streak tracking
 
 ### Key Highlights
-- 🚀 **37 RESTful API endpoints**
+- 🚀 **RESTful API endpoints**
 - 💬 **Real-time collaboration** via Socket.io
 - 🎨 **Modern UI** with Monaco code editor
-- 🏆 **Achievement system** with 8 types
+- 🏆 **Achievement system**
 - 👨‍🏫 **Mentoring platform** with booking and ratings
 - 📊 **Progress tracking** with stats and streaks
 
@@ -100,17 +99,17 @@ A modern, scalable platform that combines:
 ┌─────────────────────────────────────────────────────────────┐
 │                       Data Access Layer                      │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │   Mongoose   │  │    Redis     │  │   Piston     │      │
-│  │     ODM      │  │    Cache     │  │  Code Exec   │      │
+│  │   Mongoose   │  │              │  │   Piston     │      │
+│  │     ODM      │  │              │  │  Code Exec   │      │
 │  └──────────────┘  └──────────────┘  └──────────────┘      │
 └─────────────────────────────────────────────────────────────┘
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                        Storage Layer                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │   MongoDB    │  │    Redis     │  │  File Store  │      │
-│  │  (Database)  │  │   (Cache)    │  │   (S3/Local) │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
+│  ┌──────────────┐                                            │
+│  │   MongoDB    │                                            │
+│  │  (Database)  │                                            │
+│  └──────────────┘                                            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -118,7 +117,7 @@ A modern, scalable platform that combines:
 
 ```
 Frontend (React)
-├── Pages (13)
+├── Pages
 │   ├── Authentication (Login, Register)
 │   ├── Dashboard
 │   ├── Problems (List, Solve)
@@ -130,12 +129,12 @@ Frontend (React)
 │   ├── AuthContext (User state)
 │   └── SocketContext (Real-time)
 │
-└── Services (8)
+└── Services
     ├── API Layer (axios)
     └── Business Logic
 
 Backend (Node.js/Express)
-├── Routes (7 modules)
+├── Routes
 │   ├── Authentication
 │   ├── Users
 │   ├── Problems
@@ -144,13 +143,13 @@ Backend (Node.js/Express)
 │   ├── Sessions
 │   └── Achievements
 │
-├── Services (4)
+├── Services
 │   ├── Achievement Service
 │   ├── Execution Service
 │   ├── Session Service
 │   └── Room Service
 │
-├── Models (6)
+├── Models
 │   ├── User
 │   ├── Room
 │   ├── Problem
@@ -158,7 +157,7 @@ Backend (Node.js/Express)
 │   ├── Session
 │   └── Achievement
 │
-└── Middleware (4)
+└── Middleware
     ├── Authentication
     ├── Authorization
     ├── Rate Limiting
@@ -168,34 +167,32 @@ Backend (Node.js/Express)
 ## 🛠️ Technology Stack
 
 ### Frontend
-| Technology | Purpose | Version |
-|------------|---------|---------|
-| React | UI Framework | 18.x |
-| Vite | Build Tool | 5.x |
-| Tailwind CSS | Styling | 3.x |
-| Monaco Editor | Code Editor | 4.x |
-| Socket.io Client | Real-time | 4.x |
-| Axios | HTTP Client | 1.x |
-| React Router | Routing | 6.x |
+| Technology | Purpose |
+|------------|---------|
+| React | UI Framework |
+| Vite | Build Tool |
+| Tailwind CSS | Styling |
+| Monaco Editor | Code Editor |
+| Socket.io Client | Real-time |
+| Axios | HTTP Client |
+| React Router | Routing |
 
 ### Backend
-| Technology | Purpose | Version |
-|------------|---------|---------|
-| Node.js | Runtime | 16.x+ |
-| Express | Web Framework | 4.x |
-| MongoDB | Database | 5.x+ |
-| Mongoose | ODM | 7.x |
-| Socket.io | WebSocket | 4.x |
-| JWT | Authentication | 9.x |
-| bcrypt | Password Hashing | 5.x |
-| Redis | Caching | Optional |
+| Technology | Purpose |
+|------------|---------|
+| Node.js | Runtime |
+| Express | Web Framework |
+| MongoDB | Database |
+| Mongoose | ODM |
+| Socket.io | WebSocket |
+| JWT | Authentication |
+| bcrypt | Password Hashing |
 
 ### External Services
 | Service | Purpose |
 |---------|---------|
 | Piston API | Code Execution |
 | MongoDB Atlas | Database Hosting (optional) |
-| Redis Cloud | Caching (optional) |
 
 ## 📊 System Design
 
@@ -246,24 +243,6 @@ User A → Edit Code → Socket: code-change
 User B ← Receive Update ← Socket: code-change
 ```
 
-### Scalability Considerations
-
-#### Horizontal Scaling
-- **Load Balancer** - Distribute traffic across multiple servers
-- **Stateless API** - JWT tokens enable server-independent requests
-- **Socket.io Adapter** - Redis adapter for multi-server WebSocket
-
-#### Vertical Scaling
-- **Database Indexing** - Optimized queries
-- **Caching Layer** - Redis for frequently accessed data
-- **Connection Pooling** - Efficient database connections
-
-#### Performance Optimization
-- **Rate Limiting** - Prevent abuse (100 req/15min)
-- **Pagination** - Limit data transfer
-- **Lazy Loading** - Load components on demand
-- **Code Splitting** - Reduce initial bundle size
-
 ## 🗄️ Database Schema
 
 ### Entity Relationship Diagram
@@ -299,136 +278,17 @@ User B ← Receive Update ← Socket: code-change
 └─────────────┘                                 └─────────────┘
 ```
 
-### Schema Details
-
-#### User Model
-```javascript
-{
-  username: String (unique),
-  email: String (unique),
-  password: String (hashed),
-  role: Enum ['student', 'mentor', 'admin'],
-  avatar: String,
-  bio: String,
-  mentorProfile: {
-    specializations: [String],
-    hourlyRate: Number,
-    rating: Number,
-    totalSessions: Number
-  },
-  stats: {
-    problemsSolved: Number,
-    totalSubmissions: Number,
-    currentStreak: Number,
-    longestStreak: Number
-  },
-  achievements: [ObjectId → Achievement]
-}
-```
-
-#### Room Model
-```javascript
-{
-  roomId: String (unique),
-  name: String,
-  createdBy: ObjectId → User,
-  language: String,
-  files: [{
-    path: String,
-    content: String
-  }],
-  participants: [{
-    userId: ObjectId → User,
-    username: String,
-    role: Enum,
-    canEdit: Boolean
-  }],
-  permissions: {
-    allowChat: Boolean,
-    allowExecution: Boolean,
-    allowScreenShare: Boolean
-  },
-  recording: {
-    enabled: Boolean,
-    url: String,
-    duration: Number
-  },
-  whiteboard: {
-    enabled: Boolean,
-    data: Mixed
-  }
-}
-```
-
 ## 📡 API Documentation
 
 ### Base URL
 ```
 Development: http://localhost:5000/api
-Production: https://your-domain.com/api
 ```
 
 ### Authentication
 All protected endpoints require JWT token:
 ```
 Authorization: Bearer <token>
-```
-
-### Endpoints Summary
-
-| Category | Endpoints | Methods |
-|----------|-----------|---------|
-| Authentication | 5 | POST, GET, PUT |
-| Users | 3 | GET |
-| Problems | 5 | GET, POST, PUT, DELETE |
-| Submissions | 5 | GET, POST |
-| Rooms | 11 | GET, POST, PUT |
-| Sessions | 6 | GET, POST |
-| Achievements | 2 | GET, POST |
-| **Total** | **37** | - |
-
-### Example Requests
-
-#### Register User
-```bash
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "username": "john_doe",
-  "email": "john@example.com",
-  "password": "securepass123",
-  "role": "student"
-}
-```
-
-#### Submit Code
-```bash
-POST /api/submissions/submit
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "problemId": "507f1f77bcf86cd799439011",
-  "code": "function solve() { return 42; }",
-  "language": "javascript"
-}
-```
-
-#### Create Room
-```bash
-POST /api/rooms
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "name": "Practice Session",
-  "language": "python",
-  "permissions": {
-    "allowChat": true,
-    "allowExecution": true
-  }
-}
 ```
 
 ## 🚀 Installation
@@ -441,8 +301,8 @@ Content-Type: application/json
 
 ### Clone Repository
 ```bash
-git clone https://github.com/yourusername/codeplatform.git
-cd codeplatform
+git clone <repository-url>
+cd minor
 ```
 
 ### Backend Setup
@@ -454,7 +314,7 @@ npm install
 cat > .env << EOF
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/codeplatform
-JWT_SECRET=your_secret_key_change_this
+JWT_SECRET=your_secret_key
 PISTON_API=https://emkc.org/api/v2/piston/execute
 CORS_ORIGIN=http://localhost:5173
 EOF
@@ -481,12 +341,10 @@ npm run dev
 ### Access Application
 - Frontend: `http://localhost:5173`
 - Backend: `http://localhost:5000`
-- API Docs: `http://localhost:5000/api`
 
 ## 💻 Usage
 
 ### For Students
-
 1. **Register** as a student
 2. **Browse problems** and filter by difficulty
 3. **Solve problems** using Monaco editor
@@ -496,7 +354,6 @@ npm run dev
 7. **Book sessions** with mentors
 
 ### For Mentors
-
 1. **Register** as a mentor
 2. **Set up profile** with specializations and rate
 3. **Create problems** for students
@@ -504,81 +361,9 @@ npm run dev
 5. **Earn ratings** and build reputation
 
 ### For Admins
-
 1. **Manage users** and content
 2. **Monitor platform** activity
 3. **Configure** system settings
-
-## 🚢 Deployment
-
-### Backend Deployment (Heroku)
-
-```bash
-# Install Heroku CLI
-npm install -g heroku
-
-# Login and create app
-heroku login
-heroku create your-app-name
-
-# Set environment variables
-heroku config:set MONGO_URI=your_mongodb_uri
-heroku config:set JWT_SECRET=your_secret
-heroku config:set NODE_ENV=production
-
-# Deploy
-git push heroku main
-```
-
-### Frontend Deployment (Vercel)
-
-```bash
-# Install Vercel CLI
-npm install -g vercel
-
-# Deploy
-cd minor_frontend
-vercel --prod
-
-# Set environment variables in Vercel dashboard
-```
-
-### Database Deployment (MongoDB Atlas)
-
-1. Create account at mongodb.com/cloud/atlas
-2. Create cluster
-3. Get connection string
-4. Update `MONGO_URI` in backend .env
-
-## 📈 Performance Metrics
-
-### Response Times
-- API Endpoints: < 100ms (avg)
-- Code Execution: 1-3s (depends on code)
-- Real-time Sync: < 50ms (latency)
-
-### Scalability
-- Concurrent Users: 1000+ (with load balancer)
-- WebSocket Connections: 10,000+ (with Redis adapter)
-- Database Queries: Optimized with indexes
-
-## 🔒 Security
-
-### Implemented Measures
-- ✅ JWT Authentication
-- ✅ Password Hashing (bcrypt)
-- ✅ Rate Limiting
-- ✅ CORS Protection
-- ✅ Helmet Security Headers
-- ✅ Input Validation
-- ✅ SQL Injection Prevention (Mongoose)
-- ✅ XSS Protection
-
-### Best Practices
-- Environment variables for secrets
-- HTTPS in production
-- Regular dependency updates
-- Security audits
 
 ## 🤝 Contributing
 
@@ -590,20 +375,9 @@ We welcome contributions! Please follow these steps:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-### Code Style
-- Follow ESLint configuration
-- Use Prettier for formatting
-- Write meaningful commit messages
-- Add comments for complex logic
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👥 Team
-
-- **Your Name** - Full Stack Developer
-- **Contributors** - See [CONTRIBUTORS.md](CONTRIBUTORS.md)
 
 ## 🙏 Acknowledgments
 
@@ -613,39 +387,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Monaco Editor** - Code editor
 - **Tailwind CSS** - Styling framework
 - **React Team** - UI library
-
-## 📞 Support
-
-- **Documentation**: [docs.yourplatform.com](https://docs.yourplatform.com)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/codeplatform/issues)
-- **Email**: support@yourplatform.com
-- **Discord**: [Join our community](https://discord.gg/yourserver)
-
-## 🗺️ Roadmap
-
-### Phase 1 (Current) ✅
-- Core platform features
-- Real-time collaboration
-- Code execution
-- Mentoring system
-
-### Phase 2 (Planned)
-- [ ] Video/audio calls in sessions
-- [ ] Advanced analytics dashboard
-- [ ] Mobile applications
-- [ ] AI-powered code suggestions
-- [ ] Competitive programming contests
-- [ ] Learning paths and courses
-
-### Phase 3 (Future)
-- [ ] Enterprise features
-- [ ] API marketplace
-- [ ] Plugin system
-- [ ] Advanced security features
-- [ ] Machine learning recommendations
-
----
-
-**Built with ❤️ using MERN Stack**
-
-*Last Updated: January 2026*

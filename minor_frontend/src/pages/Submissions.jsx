@@ -9,19 +9,21 @@ const Submissions = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchSubmissions();
-    }, [user]);
+        const fetchSubmissions = async () => {
+            try {
+                const data = await submissionService.getUserSubmissions(user.id);
+                setSubmissions(data);
+            } catch (error) {
+                console.error('Failed to fetch submissions:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const fetchSubmissions = async () => {
-        try {
-            const data = await submissionService.getUserSubmissions(user.id);
-            setSubmissions(data);
-        } catch (error) {
-            console.error('Failed to fetch submissions:', error);
-        } finally {
-            setLoading(false);
+        if (user?.id) {
+            fetchSubmissions();
         }
-    };
+    }, [user]);
 
     const getStatusColor = (status) => {
         switch (status) {

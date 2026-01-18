@@ -1,174 +1,110 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import * as achievementService from '../services/achievementService';
-import * as sessionService from '../services/sessionService';
-import * as submissionService from '../services/submissionService';
+import Navbar from '../components/Navbar';
 
 const Dashboard = () => {
   const { user } = useAuth();
-  const [achievements, setAchievements] = useState([]);
-  const [sessions, setSessions] = useState([]);
-  const [recentSubmissions, setRecentSubmissions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [achievementsData, sessionsData, submissionsData] = await Promise.all([
-          achievementService.getUserAchievements(user.id),
-          sessionService.getMySessions(),
-          submissionService.getUserSubmissions(user.id)
-        ]);
-
-        setAchievements(achievementsData);
-        setSessions(sessionsData.filter(s => s.status === 'scheduled').slice(0, 3));
-        setRecentSubmissions(submissionsData.slice(0, 5));
-      } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (user) {
-      fetchData();
-    }
-  }, [user]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white">Loading...</div>
-      </div>
-    );
-  }
+  const quickStats = [
+    { label: 'Problems Solved', value: '0', icon: '⚡' },
+    { label: 'Active Sessions', value: '0', icon: '🔌' },
+    { label: 'Mentorships', value: '0', icon: '🎓' },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      {/* Navbar */}
-      <nav className="bg-gray-800 border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-white">CodePlatform</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link to="/problems" className="text-gray-300 hover:text-white px-3 py-2 rounded-md">
-                Problems
-              </Link>
-              <Link to="/rooms" className="text-gray-300 hover:text-white px-3 py-2 rounded-md">
-                Rooms
-              </Link>
-              <Link to="/sessions" className="text-gray-300 hover:text-white px-3 py-2 rounded-md">
-                Sessions
-              </Link>
-              <Link to={`/profile/${user.id}`} className="text-gray-300 hover:text-white px-3 py-2 rounded-md">
-                Profile
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-gray-50/50 dark:bg-gray-950 transition-colors duration-300">
+      <Navbar />
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="pt-28 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Welcome Section */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">
-            Welcome back, {user.username}! 👋
-          </h2>
-          <p className="text-gray-400">Here's what's happening with your coding journey</p>
+        <div className="mb-12 relative overflow-hidden rounded-3xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm p-8 md:p-12 transition-all duration-300">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-orange-100 dark:bg-orange-900/20 rounded-full blur-3xl opacity-50 -mr-16 -mt-16 pointer-events-none"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-100 dark:bg-purple-900/20 rounded-full blur-3xl opacity-50 -ml-12 -mb-12 pointer-events-none"></div>
+
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+            <div>
+              <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-2 tracking-tight">
+                Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600">{user.username}</span>! 👋
+              </h1>
+              <p className="text-lg text-gray-500 dark:text-gray-400 max-w-xl">
+                Ready to push your code to the next level? Here's what's happening today.
+              </p>
+            </div>
+
+            <div className="flex gap-4">
+              {quickStats.map((stat) => (
+                <div key={stat.label} className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-2xl p-4 min-w-[120px] text-center shadow-sm">
+                  <div className="text-2xl mb-1">{stat.icon}</div>
+                  <div className="font-bold text-gray-900 dark:text-white text-xl">{stat.value}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <div className="text-gray-400 text-sm mb-1">Problems Solved</div>
-            <div className="text-3xl font-bold text-white">{user.stats?.problemsSolved || 0}</div>
-          </div>
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <div className="text-gray-400 text-sm mb-1">Current Streak</div>
-            <div className="text-3xl font-bold text-orange-500">{user.stats?.currentStreak || 0} 🔥</div>
-          </div>
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <div className="text-gray-400 text-sm mb-1">Achievements</div>
-            <div className="text-3xl font-bold text-yellow-500">{achievements.length}</div>
-          </div>
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <div className="text-gray-400 text-sm mb-1">Total Submissions</div>
-            <div className="text-3xl font-bold text-blue-500">{user.stats?.totalSubmissions || 0}</div>
-          </div>
-        </div>
+        {/* Main Action Grid */}
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+          <span className="w-1 h-6 bg-orange-500 rounded-full"></span>
+          Get Started
+        </h2>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Link
-            to="/problems"
-            className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-6 hover:from-blue-700 hover:to-blue-800 transition-all"
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <button
+            onClick={() => navigate('/problems')}
+            className="group relative bg-white dark:bg-gray-900 p-8 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-xl transition-all duration-300 text-left hover:-translate-y-1 overflow-hidden"
           >
-            <h3 className="text-xl font-bold text-white mb-2">Solve Problems</h3>
-            <p className="text-blue-100">Practice coding challenges</p>
-          </Link>
-          <Link
-            to="/rooms"
-            className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg p-6 hover:from-purple-700 hover:to-purple-800 transition-all"
-          >
-            <h3 className="text-xl font-bold text-white mb-2">Create Room</h3>
-            <p className="text-purple-100">Collaborate with others</p>
-          </Link>
-          <Link
-            to="/mentors"
-            className="bg-gradient-to-r from-green-600 to-green-700 rounded-lg p-6 hover:from-green-700 hover:to-green-800 transition-all"
-          >
-            <h3 className="text-xl font-bold text-white mb-2">Find Mentor</h3>
-            <p className="text-green-100">Get expert guidance</p>
-          </Link>
-        </div>
-
-        {/* Recent Activity */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Upcoming Sessions */}
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <h3 className="text-xl font-bold text-white mb-4">Upcoming Sessions</h3>
-            {sessions.length > 0 ? (
-              <div className="space-y-3">
-                {sessions.map((session) => (
-                  <div key={session._id} className="bg-gray-700 rounded-lg p-4">
-                    <div className="font-medium text-white">{session.title}</div>
-                    <div className="text-sm text-gray-400 mt-1">
-                      {new Date(session.scheduledAt).toLocaleDateString()}
-                    </div>
-                  </div>
-                ))}
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500">
+              <span className="text-9xl grayscale dark:invert">💻</span>
+            </div>
+            <div className="relative z-10">
+              <div className="w-14 h-14 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300 shadow-sm">
+                💻
               </div>
-            ) : (
-              <p className="text-gray-400">No upcoming sessions</p>
-            )}
-          </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Practice Problems</h3>
+              <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
+                Curated challenges to sharpen your algorithmic thinking.
+              </p>
+            </div>
+          </button>
 
-          {/* Recent Submissions */}
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-            <h3 className="text-xl font-bold text-white mb-4">Recent Submissions</h3>
-            {recentSubmissions.length > 0 ? (
-              <div className="space-y-3">
-                {recentSubmissions.map((submission) => (
-                  <div key={submission._id} className="bg-gray-700 rounded-lg p-4 flex justify-between items-center">
-                    <div>
-                      <div className="font-medium text-white">{submission.problemId?.title || 'Problem'}</div>
-                      <div className="text-sm text-gray-400">{submission.language}</div>
-                    </div>
-                    <div className={`px-3 py-1 rounded-full text-sm ${submission.status === 'accepted' ? 'bg-green-500/20 text-green-500' : 'bg-red-500/20 text-red-500'
-                      }`}>
-                      {submission.status}
-                    </div>
-                  </div>
-                ))}
+          <button
+            onClick={() => navigate('/rooms')}
+            className="group relative bg-white dark:bg-gray-900 p-8 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-xl transition-all duration-300 text-left hover:-translate-y-1 overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500">
+              <span className="text-9xl grayscale dark:invert">👥</span>
+            </div>
+            <div className="relative z-10">
+              <div className="w-14 h-14 bg-purple-50 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300 shadow-sm">
+                👥
               </div>
-            ) : (
-              <p className="text-gray-400">No submissions yet</p>
-            )}
-          </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">Collaborative Rooms</h3>
+              <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
+                Join a room or create one to code with friends in real-time.
+              </p>
+            </div>
+          </button>
+
+          <button
+            onClick={() => navigate('/mentors')}
+            className="group relative bg-white dark:bg-gray-900 p-8 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-xl transition-all duration-300 text-left hover:-translate-y-1 overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500">
+              <span className="text-9xl grayscale dark:invert">🎓</span>
+            </div>
+            <div className="relative z-10">
+              <div className="w-14 h-14 bg-orange-50 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-orange-600 group-hover:text-white transition-colors duration-300 shadow-sm">
+                🎓
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">Find Mentors</h3>
+              <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
+                Connect with experts for code reviews and career advice.
+              </p>
+            </div>
+          </button>
         </div>
       </div>
     </div>

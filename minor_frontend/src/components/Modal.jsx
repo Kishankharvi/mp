@@ -1,0 +1,64 @@
+import React, { useEffect } from 'react';
+
+const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
+    useEffect(() => {
+        const handleEscape = (e) => {
+            if (e.key === 'Escape' && isOpen) {
+                onClose();
+            }
+        };
+
+        document.addEventListener('keydown', handleEscape);
+
+        // Prevent body scroll when modal is open
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleEscape);
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen, onClose]);
+
+    if (!isOpen) return null;
+
+    const sizeClasses = {
+        sm: 'modal-sm',
+        md: 'modal-md',
+        lg: 'modal-lg',
+        xl: 'modal-xl'
+    };
+
+    return (
+        <div
+            className="modal-overlay"
+            onClick={onClose}
+        >
+            <div
+                className={`modal-content ${sizeClasses[size]}`}
+                onClick={(e) => e.stopPropagation()}
+            >
+                {title && (
+                    <div className="modal-header">
+                        <h2 className="modal-title">{title}</h2>
+                        <button
+                            onClick={onClose}
+                            className="modal-close"
+                            aria-label="Close modal"
+                        >
+                            ×
+                        </button>
+                    </div>
+                )}
+                <div className="modal-body">
+                    {children}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Modal;
