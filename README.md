@@ -164,7 +164,7 @@ We built a unified platform that combines:
 
 ## 🏗 Architecture
 
-### System Architecture
+### System Architecture v1
 
 ```mermaid
 flowchart TB
@@ -226,6 +226,66 @@ flowchart TB
     class Docker,Containers,Sandbox execution
 ```
 
+
+### sytem archirecure v2
+```mermaid
+  flowchart TB
+    subgraph Client["🖥️ Frontend (React + Vite)"]
+        UI[User Interface]
+        Router[React Router]
+        Context[Context API]
+        Socket[Socket.io Client]
+        Monaco[Monaco Editor]
+    end
+
+    subgraph Server["⚙️ Backend (Node.js + Express)"]
+        API[REST API]
+        Auth[Auth Middleware]
+        RateLimit[Rate Limiter]
+        SocketIO[Socket.io Server]
+        Services[Business Logic]
+    end
+
+    subgraph Database["💾 Data Layer"]
+        MongoDB[(MongoDB)]
+        Models[Mongoose Models]
+    end
+
+    subgraph Execution["☁️ Code Execution (Piston API)"]
+        Piston[Piston Execution API]
+        Sandbox[Remote Secure Sandbox]
+    end
+
+    UI --> Router
+    Router --> Context
+    UI --> Socket
+    UI --> Monaco
+    
+    Socket <-->|WebSocket| SocketIO
+    UI -->|HTTP/REST| API
+    
+    API --> Auth
+    API --> RateLimit
+    API --> Services
+    SocketIO --> Services
+    
+    Services --> Models
+    Models --> MongoDB
+    
+    Services -->|Execute Code| Piston
+    Piston --> Sandbox
+
+    classDef frontend fill:#61dafb,stroke:#333,stroke-width:2px,color:#000
+    classDef backend fill:#68a063,stroke:#333,stroke-width:2px,color:#fff
+    classDef database fill:#4db33d,stroke:#333,stroke-width:2px,color:#fff
+    classDef execution fill:#f39c12,stroke:#333,stroke-width:2px,color:#fff
+    
+    class UI,Router,Context,Socket,Monaco frontend
+    class API,Auth,RateLimit,SocketIO,Services backend
+    class MongoDB,Models database
+    class Piston,Sandbox execution
+
+```
 ### Context Diagram
 
 ```mermaid
